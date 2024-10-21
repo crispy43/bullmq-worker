@@ -1,4 +1,5 @@
 import { Job, Queue } from 'bullmq';
+
 import { WorkName } from '~/config';
 import { Module } from '~/interfaces/abstract';
 import { Logger } from '~/lib/logger';

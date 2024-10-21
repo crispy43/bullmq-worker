@@ -2,13 +2,13 @@ import 'dotenv/config';
 
 import { Queue, Worker } from 'bullmq';
 
+import { WORK_FLAG } from './config';
 import { Module } from './interfaces/abstract';
 import { Logger } from './lib/logger';
 import { gracefulShutdown } from './lib/process';
 import redis, { pub, sub } from './lib/redis';
-import AlphaModule from './modules/alpha/module';
 import { getEnv } from './lib/utils';
-import { WORK_FLAG } from './config';
+import AlphaModule from './modules/alpha/module';
 
 const queueName = getEnv('QUEUE_NAME', 'work');
 const workerCount = getEnv('WORKER_COUNT', '3');
