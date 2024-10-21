@@ -1,4 +1,4 @@
-# Bull MQ Worker
+# Worker
 
 ## 설치
 
