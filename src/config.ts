@@ -1,5 +1,10 @@
+// TODO: 모듈 및 Work 추가시 각 설정에 추가
 import { SEC } from './constants/common';
 import { getEnv } from './lib/utils';
+import AlphaModule from './modules/alpha/module';
+
+// * Modules
+export const MODULES = [AlphaModule] as const;
 
 // * Work Name
 export enum WorkName {

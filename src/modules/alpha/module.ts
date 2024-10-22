@@ -12,7 +12,7 @@ export default class AlphaModule extends Module {
   work = async (job: Job) => {
     switch (job.name) {
       case WorkName.DO_SOMETHING:
-        console.log('DO_SOMETHING');
+        console.log('Do something');
         break;
       default:
         break;

@@ -2,13 +2,12 @@ import 'dotenv/config';
 
 import { Queue, Worker } from 'bullmq';
 
-import { WORK_FLAG } from './config';
+import { MODULES, WORK_FLAG } from './config';
 import { Module } from './interfaces/abstract';
 import { Logger } from './lib/logger';
 import { gracefulShutdown } from './lib/process';
 import redis, { pub, sub } from './lib/redis';
 import { getEnv } from './lib/utils';
-import AlphaModule from './modules/alpha/module';
 
 const queueName = getEnv('QUEUE_NAME', 'work');
 const workerCount = getEnv('WORKER_COUNT', '3');
@@ -17,8 +16,7 @@ class App {
   logger: Logger = new Logger();
   queue: Queue = new Queue(queueName, { connection: redis });
   workers: Worker[] = [];
-  // TODO: 모듈 추가시 배열에 추가
-  modules: Module[] = [new AlphaModule(this.logger, this.queue)];
+  modules: Module[] = MODULES.map((M) => new M(this.logger, this.queue));
 
   start = async () => {
     await this.queue.obliterate({ force: true });
@@ -73,7 +71,7 @@ class App {
 const bootstrap = async () => {
   const app = new App();
   await app.start();
-  app.logger.info('\x1b[32mScanner started!\x1b[0m');
+  app.logger.info(`\x1b[32mLet's work!\x1b[0m`);
 
   gracefulShutdown(async () => {
     await app.close();
