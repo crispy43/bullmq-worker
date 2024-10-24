@@ -22,8 +22,9 @@ class App {
     await this.queue.obliterate({ force: true });
 
     for (const module of this.modules) {
-      for (const args of module.initialQueues) {
-        if (WORK_FLAG[args.name]) await module.addQueue(args);
+      for (const work of Object.values(module.works)) {
+        if (WORK_FLAG[work.name]) await module.addQueue(work);
+        work.immediately = false;
       }
     }
 
@@ -49,10 +50,8 @@ class App {
         this.logger.info('completed', job.name);
         for (const module of this.modules) {
           await module.onComplete(job);
-          for (const args of module.initialQueues) {
-            if (args.autoLoop !== false) {
-              module.addQueue({ name: job.name });
-            }
+          if (module.works[job.name] && module.works[job.name].autoLoop !== false) {
+            module.addQueue(module.works[job.name]);
           }
         }
       });
@@ -60,10 +59,8 @@ class App {
         this.logger.error(error.message, job.name);
         for (const module of this.modules) {
           await module.onFailed(job, error);
-          for (const args of module.initialQueues) {
-            if (args.autoLoop !== false) {
-              module.addQueue({ name: job.name });
-            }
+          if (module.works[job.name] && module.works[job.name].autoLoop !== false) {
+            module.addQueue(module.works[job.name]);
           }
         }
       });

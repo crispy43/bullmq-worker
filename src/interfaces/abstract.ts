@@ -1,35 +1,37 @@
 import { Job, JobsOptions, Queue } from 'bullmq';
 
-import { WORK_DELAY } from '~/config';
+import { WORK_DELAY, WorkName } from '~/config';
 import { SEC } from '~/constants/common';
 import { Logger } from '~/lib/logger';
 import { getEnv } from '~/lib/utils';
 
-interface AddQueueArgs {
+interface WorkConfig {
   name: string;
   data?: any;
+  options?: JobsOptions;
   immediately?: boolean;
   autoLoop?: boolean;
-  options?: JobsOptions;
 }
 
 // * Module 클래스
 export abstract class Module {
   logger: Logger;
   queue: Queue;
-  initialQueues: AddQueueArgs[];
+  works: { [key in WorkName]?: WorkConfig } = {};
 
-  constructor(logger: Logger, queue: Queue, initialQueues: AddQueueArgs[] = []) {
+  constructor(logger: Logger, queue: Queue, works: WorkConfig[] = []) {
     this.logger = logger;
     this.queue = queue;
-    this.initialQueues = initialQueues;
+    works.forEach((work) => {
+      this.works[work.name] = work;
+    });
   }
 
-  addQueue = async (args: AddQueueArgs) => {
-    await this.queue.add(args.name, args.data ?? {}, {
-      delay: args.immediately ? 0 : (WORK_DELAY[args.name] ?? 1 * SEC),
+  addQueue = async (config: WorkConfig) => {
+    await this.queue.add(config.name, config.data ?? {}, {
+      delay: config.immediately ? 0 : (WORK_DELAY[config.name] ?? 1 * SEC),
       removeOnComplete: parseInt(getEnv('QUEUE_LIMIT', '100')),
-      ...args.options,
+      ...config.options,
     });
   };
 
