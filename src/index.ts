@@ -49,12 +49,22 @@ class App {
         this.logger.info('completed', job.name);
         for (const module of this.modules) {
           await module.onComplete(job);
+          for (const args of module.initialQueues) {
+            if (args.autoLoop !== false) {
+              module.addQueue({ name: job.name });
+            }
+          }
         }
       });
       worker.on('failed', async (job, error) => {
         this.logger.error(error.message, job.name);
         for (const module of this.modules) {
           await module.onFailed(job, error);
+          for (const args of module.initialQueues) {
+            if (args.autoLoop !== false) {
+              module.addQueue({ name: job.name });
+            }
+          }
         }
       });
     });

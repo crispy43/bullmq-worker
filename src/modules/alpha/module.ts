@@ -18,24 +18,4 @@ export default class AlphaModule extends Module {
         break;
     }
   };
-
-  onComplete = async (job: Job) => {
-    switch (job.name) {
-      case WorkName.DO_SOMETHING:
-        await this.addQueue({ name: job.name });
-        break;
-      default:
-        break;
-    }
-  };
-
-  onFailed = async (job: Job) => {
-    switch (job.name) {
-      case WorkName.DO_SOMETHING:
-        await this.addQueue({ name: job.name });
-        break;
-      default:
-        break;
-    }
-  };
 }

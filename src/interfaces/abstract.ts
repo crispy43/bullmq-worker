@@ -9,6 +9,7 @@ interface AddQueueArgs {
   name: string;
   data?: any;
   immediately?: boolean;
+  autoLoop?: boolean;
   options?: JobsOptions;
 }
 
@@ -33,6 +34,6 @@ export abstract class Module {
   };
 
   abstract work: (job: Job) => Promise<void>;
-  abstract onComplete: (job: Job) => Promise<void>;
-  abstract onFailed: (job: Job, error: Error) => Promise<void>;
+  onComplete: (job: Job) => Promise<void> = async () => {};
+  onFailed: (job: Job, error: Error) => Promise<void> = async () => {};
 }
