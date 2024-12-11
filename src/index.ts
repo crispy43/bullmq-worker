@@ -10,7 +10,6 @@ import redis, { pub, sub } from './lib/redis';
 import { getEnv } from './lib/utils';
 
 const queueName = getEnv('QUEUE_NAME', 'work');
-const workerCount = getEnv('WORKER_COUNT', '3');
 
 class App {
   logger: Logger = new Logger();
@@ -29,7 +28,7 @@ class App {
     }
 
     this.workers = Array.from(
-      { length: parseInt(workerCount) },
+      { length: parseInt(getEnv('WORKER_COUNT', '3')) },
       () =>
         new Worker(
           queueName,
@@ -47,7 +46,7 @@ class App {
 
     this.workers.forEach((worker) => {
       worker.on('completed', async (job) => {
-        this.logger.info('completed', job.name);
+        this.logger.info('✔️', job.name);
         for (const module of this.modules) {
           await module.onComplete(job);
           if (module.works[job.name] && module.works[job.name].autoLoop !== false) {
