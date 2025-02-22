@@ -9,7 +9,7 @@ const REDIS_URI = getEnv('REDIS_URI');
 // * Redis Database
 // TODO: 사용하는 Redis DB 인덱스에 따라 RedisDB enum을 변경
 export enum RedisDB {
-  BULL = parseInt(getEnv('REDIS_DB_DEFAULT', '0')),
+  BULL = parseInt(getEnv('BULL_REDIS_DB', '0')),
 }
 
 export const Redis = (db: RedisDB) =>
