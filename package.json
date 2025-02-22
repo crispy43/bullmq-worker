@@ -12,26 +12,26 @@
     "format": "prettier --write 'src/**/*.{js,ts}'"
   },
   "devDependencies": {
-    "@types/node": "^20.14.11",
-    "@typescript-eslint/eslint-plugin": "^7.16.1",
-    "@typescript-eslint/parser": "^7.16.1",
-    "eslint": "^8.42.0",
+    "@types/node": "^22.13.5",
+    "@typescript-eslint/eslint-plugin": "^8.24.1",
+    "@typescript-eslint/parser": "^8.24.1",
+    "eslint": "^9.21.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-prettier": "^10.0.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "prettier": "^3.3.3",
+    "prettier": "^3.5.1",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "bullmq": "^5.12.12",
+    "bullmq": "^5.41.5",
     "dotenv": "^16.4.5",
-    "ioredis": "^5.4.1"
+    "ioredis": "^5.5.0"
   },
   "engines": {
     "node": ">=20.0.0"
   },
-  "packageManager": "yarn@4.3.1"
+  "packageManager": "yarn@4.6.0"
 }

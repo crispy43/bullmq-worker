@@ -1,39 +1,38 @@
-import Redis from 'ioredis';
+import IoRedis from 'ioredis';
 
-const redis = new Redis({
-  port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
-  host: process.env.REDIS_HOST ?? '127.0.0.1',
-  username: process.env.REDIS_USERNAME ?? undefined,
-  password: process.env.REDIS_PASSWORD ?? undefined,
-  db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB) : 0,
-  maxRetriesPerRequest: null,
-});
+import { ToJson } from '~/common/types';
 
-export const pub = new Redis({
-  port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
-  host: process.env.REDIS_HOST ?? '127.0.0.1',
-  username: process.env.REDIS_USERNAME ?? undefined,
-  password: process.env.REDIS_PASSWORD ?? undefined,
-  db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB) : 0,
-  maxRetriesPerRequest: null,
-});
+import { getEnv } from './utils';
 
-export const sub = new Redis({
-  port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
-  host: process.env.REDIS_HOST ?? '127.0.0.1',
-  username: process.env.REDIS_USERNAME ?? undefined,
-  password: process.env.REDIS_PASSWORD ?? undefined,
-  db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB) : 0,
-  maxRetriesPerRequest: null,
-});
+const REDIS_URI = getEnv('REDIS_URI');
 
-export const getRedisJson = async (key: string) => {
-  const data = await redis.get(key);
-  return data ? JSON.parse(data) : null;
+// * Redis Database
+// TODO: 사용하는 Redis DB 인덱스에 따라 RedisDB enum을 변경
+export enum RedisDB {
+  BULL = parseInt(getEnv('REDIS_DB_DEFAULT', '0')),
+}
+
+export const Redis = (db: RedisDB) =>
+  new IoRedis(`${REDIS_URI}/${db}`, {
+    maxRetriesPerRequest: null,
+  });
+
+export const getRedisJson = async <T = any>(key: string, db?: RedisDB) => {
+  const data = await Redis(db).get(key);
+  return data ? (JSON.parse(data) as ToJson<T>) : null;
 };
 
-export const setRedisJson = async (key: string, value: any) => {
-  await redis.set(key, JSON.stringify(value));
+export const setRedisJson = async (
+  key: string,
+  value: any,
+  db?: RedisDB,
+  expireTime?: number, // 만료시간 (초)
+) => {
+  return expireTime
+    ? await Redis(db).set(key, JSON.stringify(value), 'EX', expireTime)
+    : await Redis(db).set(key, JSON.stringify(value));
 };
 
-export default redis;
+export const delRedis = async (key: string, db?: RedisDB) => {
+  return await Redis(db).del(key);
+};

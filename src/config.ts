@@ -1,5 +1,5 @@
 // TODO: 모듈 및 Work 추가시 각 설정에 추가
-import { SEC } from './constants/common';
+import { SEC } from './common/constant';
 import { getEnv } from './lib/utils';
 import AlphaModule from './modules/alpha/module';
 
@@ -19,7 +19,7 @@ export const WORK_FLAG: { [key in WorkName]: boolean } = {
 } as const;
 
 // * Delay
-export const WORK_DELAY: { [key in WorkName]: number } = {
+export const WORK_DELAY: { [key in WorkName]?: number } = {
   [WorkName.DO_SOMETHING]: 1 * SEC,
   [WorkName.DO_SOMETHING_ELSE]: 5 * SEC,
 } as const;

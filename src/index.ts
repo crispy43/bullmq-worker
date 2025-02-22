@@ -2,20 +2,21 @@ import 'dotenv/config';
 
 import { Queue, Worker } from 'bullmq';
 
+import { Module } from './common/abstract';
 import { MODULES, WORK_FLAG } from './config';
-import { Module } from './interfaces/abstract';
 import { Logger } from './lib/logger';
 import { gracefulShutdown } from './lib/process';
-import redis, { pub, sub } from './lib/redis';
+import { Redis, RedisDB } from './lib/redis';
 import { getEnv } from './lib/utils';
 
 const queueName = getEnv('QUEUE_NAME', 'work');
+const redis = Redis(RedisDB.BULL);
 
 class App {
   logger: Logger = new Logger();
   queue: Queue = new Queue(queueName, { connection: redis });
   workers: Worker[] = [];
-  modules: Module[] = MODULES.map((M) => new M(this.logger, this.queue));
+  modules: Module[] = MODULES.map((M) => new M(this.queue));
 
   start = async () => {
     await this.queue.obliterate({ force: true });
@@ -34,7 +35,8 @@ class App {
           queueName,
           async (job) => {
             for (const module of this.modules) {
-              await module.work(job);
+              const logger = new Logger(job.name);
+              await module.work(job, logger);
             }
           },
           {
@@ -46,19 +48,25 @@ class App {
 
     this.workers.forEach((worker) => {
       worker.on('completed', async (job) => {
-        this.logger.info('✔️', job.name);
+        const logger = this.logger.job(job.name);
+        logger.info('✔️');
         for (const module of this.modules) {
-          await module.onComplete(job);
+          await module.onComplete(job, logger);
           if (module.works[job.name] && module.works[job.name].autoLoop !== false) {
             module.addQueue(module.works[job.name]);
           }
         }
       });
       worker.on('failed', async (job, error) => {
-        this.logger.error(error.message, job.name);
+        const logger = this.logger.job(job.name);
+        logger.error(error.message);
         for (const module of this.modules) {
-          await module.onFailed(job, error);
-          if (module.works[job.name] && module.works[job.name].autoLoop !== false) {
+          await module.onFailed(job, error, logger);
+          if (
+            module.works[job.name] &&
+            module.works[job.name].autoLoop !== false &&
+            module.works[job.name].stopOnFailed !== false
+          ) {
             module.addQueue(module.works[job.name]);
           }
         }
@@ -82,8 +90,6 @@ const bootstrap = async () => {
   gracefulShutdown(async () => {
     await app.close();
     redis.disconnect();
-    pub.disconnect();
-    sub.disconnect();
     app.logger.info('Process exit');
     process.exit(0);
   });
