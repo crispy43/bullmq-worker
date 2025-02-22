@@ -35,7 +35,7 @@ class App {
           queueName,
           async (job) => {
             for (const module of this.modules) {
-              const logger = new Logger(job.name);
+              const logger = this.logger.job(job.name);
               await module.work(job, logger);
             }
           },
