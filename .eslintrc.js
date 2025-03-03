@@ -13,53 +13,6 @@ module.exports = {
     node: true,
   },
   ignorePatterns: ['.eslintrc.js'],
-  overrides: [
-    {
-      files: ['**/*.{ts,tsx}'],
-      plugins: ['@typescript-eslint', 'import'],
-      parser: '@typescript-eslint/parser',
-      settings: {
-        'import/internal-regex': '^~/',
-        'import/resolver': {
-          node: {
-            extensions: ['.ts', '.tsx'],
-          },
-          typescript: {
-            alwaysTryTypes: true,
-          },
-        },
-      },
-      extends: [
-        'plugin:@typescript-eslint/recommended',
-        'plugin:import/recommended',
-        'plugin:import/typescript',
-      ],
-      rules: {
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          {
-            args: 'all',
-            argsIgnorePattern: '^_',
-            caughtErrors: 'all',
-            caughtErrorsIgnorePattern: '^_',
-            destructuredArrayIgnorePattern: '^_',
-            varsIgnorePattern: '^_',
-            ignoreRestSiblings: true,
-          },
-        ],
-        '@typescript-eslint/interface-name-prefix': 'off',
-        '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/explicit-module-boundary-types': 'off',
-        '@typescript-eslint/no-explicit-any': 'off',
-      },
-    },
-    {
-      files: ['.eslintrc.cjs'],
-      env: {
-        node: true,
-      },
-    },
-  ],
   rules: {
     '@typescript-eslint/no-unused-vars': [
       'error',
