@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import { Queue, Worker } from 'bullmq';
+import { ConnectionOptions, Queue, Worker } from 'bullmq';
 
 import { Module } from './common/abstract';
 import { MODULES, WORK_FLAG } from './config';
@@ -14,7 +14,7 @@ const redis = Redis(RedisDB.BULL);
 
 class App {
   logger: Logger = new Logger();
-  queue: Queue = new Queue(queueName, { connection: redis });
+  queue: Queue = new Queue(queueName, { connection: redis as ConnectionOptions });
   workers: Worker[] = [];
   modules: Module[] = MODULES.map((M) => new M(this.queue));
 
@@ -40,7 +40,7 @@ class App {
             }
           },
           {
-            connection: redis,
+            connection: redis as ConnectionOptions,
             concurrency: parseInt(getEnv('WORKER_CONCURRENCY', '100')),
           },
         ),

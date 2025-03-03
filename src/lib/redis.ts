@@ -1,4 +1,4 @@
-import IoRedis from 'ioredis';
+import * as IoRedis from 'ioredis';
 
 import { ToJson } from '~/common/types';
 
@@ -13,7 +13,7 @@ export enum RedisDB {
 }
 
 export const Redis = (db: RedisDB) =>
-  new IoRedis(`${REDIS_URI}/${db}`, {
+  new IoRedis.Redis(`${REDIS_URI}/${db}`, {
     maxRetriesPerRequest: null,
   });
 
