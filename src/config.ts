@@ -1,5 +1,5 @@
 // TODO: 모듈 및 Work 추가시 각 설정에 추가
-import { SEC } from './common/constant';
+import { SEC } from './common/constants';
 import { getEnv } from './lib/utils';
 import AlphaModule from './modules/alpha/module';
 

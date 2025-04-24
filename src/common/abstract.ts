@@ -1,6 +1,6 @@
 import { Job, JobsOptions, Queue } from 'bullmq';
 
-import { SEC } from '~/common/constant';
+import { SEC } from '~/common/constants';
 import { WORK_DELAY, WorkName } from '~/config';
 import { Logger } from '~/lib/logger';
 import { getEnv } from '~/lib/utils';
@@ -28,7 +28,7 @@ export abstract class Module {
 
   addQueue = async (config: WorkConfig) => {
     await this.queue.add(config.name, config.data ?? {}, {
-      delay: config.immediately ? 0 : (WORK_DELAY[config.name] ?? 1 * SEC),
+      delay: config.immediately ? 0 : WORK_DELAY[config.name] ?? 1 * SEC,
       removeOnComplete: parseInt(getEnv('QUEUE_LIMIT', '100')),
       ...config.options,
     });
