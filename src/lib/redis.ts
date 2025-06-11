@@ -9,15 +9,27 @@ const REDIS_URI = getEnv('REDIS_URI');
 // * Redis Database
 // TODO: 사용하는 Redis DB 인덱스에 따라 RedisDB enum을 변경
 export enum RedisDB {
-  BULL = parseInt(getEnv('BULL_REDIS_DB', '0')),
+  BULL = parseInt(getEnv('REDIS_BULL_DB', '0')),
 }
 
-export const Redis = (db: RedisDB) =>
-  new IoRedis.Redis(`${REDIS_URI}/${db}`, {
-    maxRetriesPerRequest: null,
-  });
+// TODO: 기본 Redis DB 설정
+const DEFAULT_REDIS_DB = RedisDB.BULL;
 
-export const getRedisJson = async <T = any>(key: string, db?: RedisDB) => {
+const redisDbs = Object.fromEntries(
+  Object.values(RedisDB)
+    .filter((db) => typeof db === 'number')
+    .map((value) => [
+      value,
+      new IoRedis.Redis(`${REDIS_URI}/${value}`, {
+        maxRetriesPerRequest: null,
+      }),
+    ]),
+);
+
+export const Redis = (db?: RedisDB | number) =>
+  db ? redisDbs[db] : redisDbs[DEFAULT_REDIS_DB];
+
+export const getRedisJson = async <T = any>(key: string, db?: RedisDB | number) => {
   const data = await Redis(db).get(key);
   return data ? (JSON.parse(data) as ToJson<T>) : null;
 };
@@ -25,7 +37,7 @@ export const getRedisJson = async <T = any>(key: string, db?: RedisDB) => {
 export const setRedisJson = async (
   key: string,
   value: any,
-  db?: RedisDB,
+  db?: RedisDB | number,
   expireTime?: number, // 만료시간 (초)
 ) => {
   return expireTime
@@ -33,6 +45,6 @@ export const setRedisJson = async (
     : await Redis(db).set(key, JSON.stringify(value));
 };
 
-export const delRedis = async (key: string, db?: RedisDB) => {
+export const delRedis = async (key: string, db?: RedisDB | number) => {
   return await Redis(db).del(key);
 };
