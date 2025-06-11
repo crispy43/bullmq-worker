@@ -27,7 +27,7 @@ const redisDbs = Object.fromEntries(
 );
 
 export const Redis = (db?: RedisDB | number) =>
-  db ? redisDbs[db] : redisDbs[DEFAULT_REDIS_DB];
+  typeof db !== 'undefined' ? redisDbs[db] : redisDbs[DEFAULT_REDIS_DB];
 
 export const getRedisJson = async <T = any>(key: string, db?: RedisDB | number) => {
   const data = await Redis(db).get(key);
