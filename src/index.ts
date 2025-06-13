@@ -74,10 +74,13 @@ class App {
     });
   };
 
-  close = async () => {
+  close = async (force: boolean = false) => {
+    for (const module of this.modules) {
+      await module.close(force);
+    }
     await this.queue.close();
     for (const worker of this.workers) {
-      await worker.close(true);
+      await worker.close(force);
     }
   };
 }
@@ -88,7 +91,7 @@ const bootstrap = async () => {
   app.logger.info(`\x1b[32mLet's work!\x1b[0m`);
 
   gracefulShutdown(async () => {
-    await app.close();
+    await app.close(true);
     redis.disconnect();
     app.logger.info('Process exit');
     process.exit(0);

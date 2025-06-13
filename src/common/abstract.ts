@@ -37,4 +37,5 @@ export abstract class Module {
   abstract work: (job: Job, logger: Logger) => Promise<void>;
   onComplete: (job: Job, logger: Logger) => Promise<void> = async () => {};
   onFailed: (job: Job, error: Error, logger: Logger) => Promise<void> = async () => {};
+  close: (force?: boolean) => Promise<void> = async () => {};
 }
