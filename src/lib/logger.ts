@@ -55,7 +55,7 @@ export class Logger {
 
   warn(message: string, jobName?: string) {
     if (env('LOG_WARN') !== 'true') return;
-    console.info(this.format('WARN', '\x1b[36m', message, jobName));
+    console.info(this.format('WARN', '\x1b[33m', message, jobName));
   }
 
   error(message: string, jobName?: string) {
