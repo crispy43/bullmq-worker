@@ -9,7 +9,8 @@
     "start": "node dist/index.js",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "lint:fix": "eslint 'src/**/*.{js,ts}' --fix",
-    "format": "prettier --write 'src/**/*.{js,ts}'"
+    "format": "prettier --write 'src/**/*.{js,ts}'",
+    "prepare": "simple-git-hooks"
   },
   "devDependencies": {
     "@types/node": "^22.13.5",
@@ -22,7 +23,9 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.0.0",
+    "lint-staged": "^16.1.2",
     "prettier": "^2.8.8",
+    "simple-git-hooks": "^2.13.0",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
@@ -36,5 +39,17 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.6.0",
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix"
+    ],
+    "*": [
+      "prettier --write ."
+    ]
+  },
+  "simple-git-hooks": {
+    "pre-commit": "yarn lint-staged",
+    "pre-push": "yarn format"
+  }
 }

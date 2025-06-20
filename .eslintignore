@@ -1,2 +1,6 @@
 node_modules/
-dist/
+build/
+/.vscode
+/.yarn
+yarn.lock
+README.md

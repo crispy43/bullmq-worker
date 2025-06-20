@@ -1,2 +1,7 @@
 node_modules/
-dist/
+build/
+/.vscode
+/.yarn
+yarn.lock
+/.eslintignore
+/.prettierignore
