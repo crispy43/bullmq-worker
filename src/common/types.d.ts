@@ -6,7 +6,7 @@ export type ToJson<T> = T extends string | number | boolean | null
   : T extends (...args: any[]) => any
   ? never // 함수는 반환하지 않음
   : T extends bigint
-  ? string // bigint는 string으로
+  ? never // bigint은 반환하지 않음
   : T extends symbol
   ? never // symbol은 반환하지 않음
   : T extends Promise<infer U>
