@@ -1,3 +1,5 @@
+import { env } from './utils';
+
 export class Logger {
   name?: string;
   prefix?: string;
@@ -10,7 +12,7 @@ export class Logger {
   }
 
   private format(
-    level: 'INFO' | 'ERROR',
+    level: 'INFO' | 'ERROR' | 'DEBUG' | 'WARN',
     color: string,
     message: string,
     jobName?: string,
@@ -18,13 +20,42 @@ export class Logger {
     const namePart = jobName || this.name;
     const prefixPart = this.prefix ? `${this.prefix}` : '';
     const suffixPart = this.suffix ? ` ${this.suffix}` : '';
-    return `${color}[${level}]${
+    let head: string = `[${level}]`;
+    if (env('LOG_HEAD_STYLE', 'emoji') === 'emoji') {
+      switch (level) {
+        case 'INFO':
+          head = 'ℹ️ ';
+          break;
+        case 'ERROR':
+          head = '❌ ';
+          break;
+        case 'DEBUG':
+          head = '🪲 ';
+          break;
+        case 'WARN':
+          head = '⚠️ ';
+          break;
+        default:
+          break;
+      }
+    }
+    return `${color}${head}${
       namePart ? `\x1b[33m[${namePart}]` : ''
     }\x1b[0m ${prefixPart}${message}${suffixPart}`;
   }
 
   info(message: string, jobName?: string) {
     console.info(this.format('INFO', '\x1b[34m', message, jobName));
+  }
+
+  debug(message: string, jobName?: string) {
+    if (env('LOG_DEBUG') !== 'true') return;
+    console.info(this.format('DEBUG', '\x1b[36m', message, jobName));
+  }
+
+  warn(message: string, jobName?: string) {
+    if (env('LOG_WARN') !== 'true') return;
+    console.info(this.format('WARN', '\x1b[36m', message, jobName));
   }
 
   error(message: string, jobName?: string) {

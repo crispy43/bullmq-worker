@@ -2,14 +2,14 @@ import * as IoRedis from 'ioredis';
 
 import { ToJson } from '~/common/types';
 
-import { getEnv } from './utils';
+import { env } from './utils';
 
-const REDIS_URI = getEnv('REDIS_URI');
+const REDIS_URI = env('REDIS_URI');
 
 // * Redis Database
-// TODO: 사용하는 Redis DB 인덱스에 따라 RedisDB enum을 변경
+// TODO: 사용하는 Redis DB 인덱스에 따라 RedisDB enum을 추가
 export enum RedisDB {
-  BULL = parseInt(getEnv('REDIS_BULL_DB', '0')),
+  BULL = parseInt(env('REDIS_BULL_DB', '0')),
 }
 
 // TODO: 기본 Redis DB 설정
@@ -37,8 +37,9 @@ export const getRedisJson = async <T = any>(key: string, db?: RedisDB | number) 
 export const setRedisJson = async (
   key: string,
   value: any,
-  db?: RedisDB | number,
-  expireTime?: number, // 만료시간 (초)
+  { db, expireTime }: { db?: RedisDB | number; expireTime?: number } = {
+    db: DEFAULT_REDIS_DB,
+  },
 ) => {
   return expireTime
     ? await Redis(db).set(key, JSON.stringify(value), 'EX', expireTime)

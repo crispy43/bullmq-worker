@@ -1,6 +1,6 @@
 // TODO: 모듈 및 Work 추가시 각 설정에 추가
 import { SEC } from './common/constants';
-import { getEnv } from './lib/utils';
+import { env } from './lib/utils';
 import AlphaModule from './modules/alpha/module';
 
 // * Modules
@@ -14,8 +14,8 @@ export enum WorkName {
 
 // * On/Off
 export const WORK_FLAG: { [key in WorkName]: boolean } = {
-  [WorkName.DO_SOMETHING]: getEnv('WORK_DO_SOMETHING') === 'true',
-  [WorkName.DO_SOMETHING_ELSE]: getEnv('WORK_DO_SOMETHING_ELSE') === 'true',
+  [WorkName.DO_SOMETHING]: env('WORK_DO_SOMETHING') === 'true',
+  [WorkName.DO_SOMETHING_ELSE]: env('WORK_DO_SOMETHING_ELSE') === 'true',
 } as const;
 
 // * Delay

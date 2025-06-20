@@ -7,9 +7,10 @@ import { MODULES, WORK_FLAG } from './config';
 import { Logger } from './lib/logger';
 import { gracefulShutdown } from './lib/process';
 import { Redis, RedisDB } from './lib/redis';
-import { getEnv } from './lib/utils';
+import utils, { env } from './lib/utils';
 
-const queueName = getEnv('QUEUE_NAME', 'work');
+utils();
+const queueName = env('QUEUE_NAME', 'work');
 const redis = Redis(RedisDB.BULL);
 
 class App {
@@ -29,7 +30,7 @@ class App {
     }
 
     this.workers = Array.from(
-      { length: parseInt(getEnv('WORKER_COUNT', '3')) },
+      { length: parseInt(env('WORKER_COUNT', '3')) },
       () =>
         new Worker(
           queueName,
@@ -41,7 +42,7 @@ class App {
           },
           {
             connection: redis as ConnectionOptions,
-            concurrency: parseInt(getEnv('WORKER_CONCURRENCY', '100')),
+            concurrency: parseInt(env('WORKER_CONCURRENCY', '100')),
           },
         ),
     );
@@ -49,7 +50,9 @@ class App {
     this.workers.forEach((worker) => {
       worker.on('completed', async (job) => {
         const logger = this.logger.job(job.name);
-        logger.info('✔️');
+        if (env('LOG_JOB_COMPLETED', 'true') === 'true') {
+          logger.info('✔️');
+        }
         for (const module of this.modules) {
           await module.onComplete(job, logger);
           if (module.works[job.name] && module.works[job.name].autoLoop !== false) {
