@@ -1,8 +1,9 @@
 import 'dotenv/config';
 
-import { ConnectionOptions, Queue, Worker } from 'bullmq';
+import type { ConnectionOptions } from 'bullmq';
+import { Queue, Worker } from 'bullmq';
 
-import { Module } from './common/abstract';
+import type { Module } from './common/abstract';
 import { MODULES, WORK_FLAG } from './config';
 import { Logger } from './lib/logger';
 import { gracefulShutdown } from './lib/process';

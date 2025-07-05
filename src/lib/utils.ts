@@ -1,5 +1,3 @@
-export default function utils() {}
-
 // * 환경변수 가져오기
 export const env = (name: string, defaultValue?: string) => {
   const env = process.env[name];
@@ -8,3 +6,5 @@ export const env = (name: string, defaultValue?: string) => {
   }
   return env ? env : defaultValue;
 };
+
+export default function utils() {}

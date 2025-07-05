@@ -1,8 +1,9 @@
-import { Job, JobsOptions, Queue } from 'bullmq';
+import type { Job, JobsOptions, Queue } from 'bullmq';
 
 import { SEC } from '~/common/constants';
-import { WORK_DELAY, WorkName } from '~/config';
-import { Logger } from '~/lib/logger';
+import type { WorkName } from '~/config';
+import { WORK_DELAY } from '~/config';
+import type { Logger } from '~/lib/logger';
 import { env } from '~/lib/utils';
 
 interface WorkConfig {

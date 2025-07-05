@@ -1,6 +1,6 @@
 import * as IoRedis from 'ioredis';
 
-import { ToJson } from '~/common/types';
+import type { ToJson } from '~/common/types';
 
 import { env } from './utils';
 

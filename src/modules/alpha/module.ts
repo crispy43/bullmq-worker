@@ -1,8 +1,8 @@
-import { Job, Queue } from 'bullmq';
+import type { Job, Queue } from 'bullmq';
 
 import { Module } from '~/common/abstract';
 import { WorkName } from '~/config';
-import { Logger } from '~/lib/logger';
+import type { Logger } from '~/lib/logger';
 
 export default class AlphaModule extends Module {
   constructor(queue: Queue) {
