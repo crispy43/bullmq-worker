@@ -37,7 +37,7 @@ class App {
           queueName,
           async (job) => {
             for (const module of this.modules) {
-              const logger = this.logger.job(job.name);
+              const logger = this.logger.create(job.name);
               await module.work(job, logger);
             }
           },
@@ -50,7 +50,7 @@ class App {
 
     this.workers.forEach((worker) => {
       worker.on('completed', async (job) => {
-        const logger = this.logger.job(job.name);
+        const logger = this.logger.create(job.name);
         if (env('LOG_JOB_COMPLETED', 'true') === 'true') {
           logger.info('✔️');
         }
@@ -62,7 +62,7 @@ class App {
         }
       });
       worker.on('failed', async (job, error) => {
-        const logger = this.logger.job(job.name);
+        const logger = this.logger.create(job.name);
         logger.error(error.message);
         for (const module of this.modules) {
           await module.onFailed(job, error, logger);

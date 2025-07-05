@@ -62,7 +62,7 @@ export class Logger {
     console.error(this.format('ERROR', '\x1b[31m', message, jobName));
   }
 
-  job(jobName: string, inheritPrefixSuffix = false) {
+  create(jobName: string, inheritPrefixSuffix = false) {
     const logger = new Logger(jobName);
     if (inheritPrefixSuffix) {
       logger.prefix = this.prefix;
