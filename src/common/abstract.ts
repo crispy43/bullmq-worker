@@ -29,7 +29,7 @@ export abstract class Module {
 
   addQueue = async (config: WorkConfig) => {
     await this.queue.add(config.name, config.data ?? {}, {
-      delay: config.immediately ? 0 : WORK_DELAY[config.name] ?? 1 * SEC,
+      delay: config.immediately ? 0 : (WORK_DELAY[config.name] ?? 1 * SEC),
       removeOnComplete: parseInt(env('QUEUE_LIMIT', '100')),
       ...config.options,
     });

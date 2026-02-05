@@ -5,14 +5,14 @@ import { Queue, Worker } from 'bullmq';
 
 import type { Module } from './common/abstract';
 import { MODULES, WORK_FLAG } from './config';
+import { RedisClientOf, RedisDB } from './db/redis/redis';
 import { Logger } from './lib/logger';
 import { gracefulShutdown } from './lib/process';
-import { Redis, RedisDB } from './lib/redis';
 import utils, { env } from './lib/utils';
 
 utils();
 const queueName = env('QUEUE_NAME', 'work');
-const redis = Redis(RedisDB.BULL);
+const redis = RedisClientOf(RedisDB.BULL);
 
 class App {
   logger: Logger = new Logger();
